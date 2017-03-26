@@ -9,7 +9,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import com.loopj.android.http.*;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+
+import cz.msebera.android.httpclient.Header;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -18,7 +26,7 @@ public class RecentMatchFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
-    private RecyclerView.Adapter mAdapter;
+    private RecentMatchAdapter mAdapter;
     private Context context;
 
     public RecentMatchFragment() {
@@ -39,6 +47,34 @@ public class RecentMatchFragment extends Fragment {
         //Supply our recyclerView an adapter
         this.mAdapter = new RecentMatchAdapter();
         this.mRecyclerView.setAdapter(this.mAdapter);
+
+
+
+        AsyncHttpClient client = new AsyncHttpClient();
+        RequestParams params = new RequestParams();
+        params.put("account_id","76561198123095133");
+        params.put("key",Keys.STEAM_KEY);
+        client.get("https://api.steampowered.com/IDOTA2Match_570/GetMatchHistory/V001/", params, new JsonHttpResponseHandler(){
+           @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response){
+               ArrayList<MatchDetailStruct> data = new ArrayList<MatchDetailStruct>();
+               JSONArray arr =  response.optJSONObject("result").optJSONArray("matches");
+               for(int i = 0; i < arr.length(); i++){
+                   try {
+                       Log.d("matchDetails",arr.optJSONObject(i).toString());
+                       data.add(new MatchDetailStruct(arr.optJSONObject(i)));
+                   } catch (JSONException e) {
+                       e.printStackTrace();
+                   }
+               }
+               mAdapter.updateMatches(data, false);
+           }
+
+           @Override
+            public void onFailure(int statusCode, Header[] headers, String res, Throwable t){
+                Log.e("WardsPls", "Status Code: " + statusCode);
+           }
+        });
 
     }
 

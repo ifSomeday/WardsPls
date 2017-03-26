@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">WardsPls</string>
     <string name="action_settings">Settings</string>
+    <string name="match_id">MATCH ID</string>
+    <string name="time">TIME</string>
+    <string name="lobby_type">LOBBY TYPE</string>
 </resources>
