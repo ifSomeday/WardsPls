@@ -52,9 +52,9 @@ public class RecentMatchFragment extends Fragment {
 
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
-        params.put("account_id","76561198123095133");
+        params.put(WebApiProcessor.parameters.ACCOUNT_ID.toString(),"76561198123095133");
         params.put("key",Keys.STEAM_KEY);
-        client.get("https://api.steampowered.com/IDOTA2Match_570/GetMatchHistory/V001/", params, new JsonHttpResponseHandler(){
+        client.get(WebApiProcessor.requestType.GET_MATCH_HISTORY.toString(), params, new JsonHttpResponseHandler(){
            @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response){
                ArrayList<MatchDetailStruct> data = new ArrayList<MatchDetailStruct>();
